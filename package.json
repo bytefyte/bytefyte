@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production bun run ./server/server.ts",
     "build": "NODE_ENV=production bun build ./client/index.tsx --outdir ./dist",
-    "dev": "NODE_ENV=development concurrently \"npx webpack serve --open\" \"nodemon server/server.ts\""
+    "dev": "NODE_ENV=development concurrently \"bun run --hot ./server/server.ts\" \"bun build --watch ./client/index.tsx --outdir ./dist\""
   },
   "repository": {
     "type": "git",
@@ -19,12 +19,6 @@
   },
   "homepage": "https://github.com/bytefyte/bytefyte#readme",
   "devDependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/plugin-transform-runtime": "^7.23.2",
-    "@types/express": "^4.17.19",
-    "@types/react": "^18.2.28",
-    "@types/react-dom": "^18.2.13",
-    "babel-loader": "^9.1.3",
     "bun-types": "latest",
     "concurrently": "^8.2.1",
     "dotenv": "^16.3.1",
