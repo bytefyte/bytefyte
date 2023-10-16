@@ -1,0 +1,34 @@
+{
+  "name": "bytefyte",
+  "version": "1.0.0",
+  "description": "This is ByteFyte",
+  "main": "webpack.config.js",
+  "scripts": {
+    "start": "NODE_ENV=production bun run ./server/server.ts",
+    "build": "NODE_ENV=production bun build ./client/index.tsx --outdir ./dist",
+    "dev": "NODE_ENV=development concurrently \"bun run --hot ./server/server.ts\" \"bun build --watch ./client/index.tsx --outdir ./dist\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytefyte/bytefyte.git"
+  },
+  "author": "Max Weiner, Bryan Choe, Siddhant Saxena, Quinn Craddock, Nate Doucette",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bytefyte/bytefyte/issues"
+  },
+  "homepage": "https://github.com/bytefyte/bytefyte#readme",
+  "devDependencies": {
+    "bun-types": "latest",
+    "concurrently": "^8.2.1",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.17.0",
+    "react-router-dom": "^6.17.0"
+  }
+}
