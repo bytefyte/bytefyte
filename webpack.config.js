@@ -22,6 +22,7 @@ module.exports = {
     port: 8000,
     hot: true,
     proxy: {},
+    historyApiFallback: true,
   },
   module: {
     rules: [
