@@ -1,12 +1,15 @@
 import 'dotenv/config'
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { join } from 'path';
+import { Server, Socket } from 'socket.io';
+import http from 'http';
 // const authenticationController = require('./controllers/authenticationController')
 import authenticationController from './controllers/authenticationController';
 
 const app: Express = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const httpServer: http.Server = http.createServer(app);
+const io: Server = require('socket.io')(http);
+
 app.use(express.json());
 app.use(express.static(join(__dirname, '../client/assets')));
 
@@ -48,7 +51,7 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
 
 const matchmakingQueue: string[] = [];  // Array to hold users in queue
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('User connected:', socket.id);
 
   // Handle joinMatch event
@@ -60,11 +63,14 @@ io.on('connection', (socket) => {
     if (matchmakingQueue.length >= 2) {
       const user1 = matchmakingQueue.shift();  // Remove and get the first user from the queue
       const user2 = matchmakingQueue.shift();  // Remove and get the second user from the queue
-      
-      // Notify users that a match has been found
-      io.to(user1).emit('matchFound', { opponent: user2 });
-      io.to(user2).emit('matchFound', { opponent: user1 });
+    
+      if (user1 && user2) {
+        // Notify users that a match has been found
+        io.to(user1).emit('matchFound', { opponent: user2 });
+        io.to(user2).emit('matchFound', { opponent: user1 });
+      }
     }
+    
   });
 
   // Handle leaveMatch event
@@ -88,6 +94,6 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(3000, () => {
+httpServer.listen(3000, () => {
   console.log(`[server]: Server is running at http://localhost:3000`);
 });
