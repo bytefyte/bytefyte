@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react';
-import { useNavigate} from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 
 const socket = io('http://localhost:3000')
@@ -10,19 +10,23 @@ interface homeProps {
 }
 
 const Home = (props:homeProps) => {
+  const navigate = useNavigate();
   const [queued, queuedState] = useState(false);
+  const [roomName, setRoomName] = useState('');
   useEffect(() => {
-    socket.on('joinMatch', () => {
-      console.log('joined match!')
+    socket.on('matchFound', (data) => {
+      console.log('Match found!', data.roomName);
+      setRoomName(data.roomName);
+      navigate('/battlePage');
     });
-   return () => {
-      socket.off('joinMatch');
+    return () => {
+      socket.off('matchFound');
     };
   }, []);
 
   const handleQueueClick = () => {
     queuedState(!queued);
-    socket.emit('joinMatch')
+    socket.emit('joinQueue', props.username)
   }
 
   return (

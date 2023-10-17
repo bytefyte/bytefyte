@@ -77,19 +77,22 @@ io.on('connection', (socket: Socket) => {
   console.log('User connected:', socket.id);
 
   // Handle joinMatch event
-  socket.on('joinMatch', (username) => {
-    console.log('User joined match:', username, socket.id);
+  socket.on('joinQueue', (username) => {
+    console.log('User joined queue:', username, socket.id);
     matchmakingQueue.push(socket.id);
-
+  
     // Check if two users are in the queue
     if (matchmakingQueue.length >= 2) {
-      const user1 = matchmakingQueue.shift(); // Remove and get the first user from the queue
-      const user2 = matchmakingQueue.shift(); // Remove and get the second user from the queue
-
+      const user1 = matchmakingQueue.shift();
+      const user2 = matchmakingQueue.shift();
+  
       if (user1 && user2) {
-        // Notify users that a match has been found
-        io.to(user1).emit('matchFound', { opponent: user2 });
-        io.to(user2).emit('matchFound', { opponent: user1 });
+        const roomName = user1 + user2;  // or username1 + username2
+        io.to(user1).emit('matchFound', { roomName });
+        io.to(user2).emit('matchFound', { roomName });
+
+        io.sockets.sockets.get(user1)?.join(roomName);
+        io.sockets.sockets.get(user2)?.join(roomName);
       }
     }
   });
