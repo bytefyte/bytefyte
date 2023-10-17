@@ -1,12 +1,22 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { join } from 'path';
+import { Server, Socket } from 'socket.io';
+import http from 'http';
+import cors from 'cors';
+
 // const authenticationController = require('./controllers/authenticationController')
 import authenticationController from './controllers/authenticationController';
 
 const app: Express = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const httpServer: http.Server = http.createServer(app);
+const io: Server = new Server(httpServer, {
+  cors: {
+    origin: ['http://localhost:8000'],
+  },
+});
+
+app.use(cors<Request>());
 app.use(express.json());
 app.use(express.static(join(__dirname, '../client/assets')));
 
@@ -15,20 +25,35 @@ if (process.env.NODE_ENV === 'production') {
   // statically serve everything in the build folder on the route '/dist'
   app.use('/dist', express.static(join(__dirname, '../dist')));
   // serve index.html on the route '/'
-  app.get('/', (req: Request, res: Response) => res.status(200).sendFile(join(__dirname, '../index.html')));
+  app.get('/', (req: Request, res: Response) =>
+    res.status(200).sendFile(join(__dirname, '../index.html'))
+  );
 }
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server :)');
 });
 
-app.post('/signup', authenticationController.signup, (req: Request, res: Response) => {
-  res.status(200).json({message: 'User successfully created'});
-})
+app.post(
+  '/api/signup',
+  authenticationController.signup,
+  (req: Request, res: Response) => {
+    res.status(200).json({
+      message: 'User successfully created',
+      username: res.locals.username,
+    });
+  }
+);
 
-app.post('/login', authenticationController.login, (req: Request, res: Response) => {
-  res.status(200).json({message: 'Login successful'});
-})
+app.post(
+  '/api/login',
+  authenticationController.login,
+  (req: Request, res: Response) => {
+    res
+      .status(200)
+      .json({ message: 'Login successful', username: res.locals.username });
+  }
+);
 
 // Unknown route handler
 app.use((req: Request, res: Response) => res.sendStatus(404));
@@ -46,24 +71,26 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-const matchmakingQueue: string[] = [];  // Array to hold users in queue
+const matchmakingQueue: string[] = []; // Array to hold users in queue
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('User connected:', socket.id);
 
   // Handle joinMatch event
-  socket.on('joinMatch', () => {
-    console.log('User joined match:', socket.id);
+  socket.on('joinMatch', (username) => {
+    console.log('User joined match:', username, socket.id);
     matchmakingQueue.push(socket.id);
-    
+
     // Check if two users are in the queue
     if (matchmakingQueue.length >= 2) {
-      const user1 = matchmakingQueue.shift();  // Remove and get the first user from the queue
-      const user2 = matchmakingQueue.shift();  // Remove and get the second user from the queue
-      
-      // Notify users that a match has been found
-      io.to(user1).emit('matchFound', { opponent: user2 });
-      io.to(user2).emit('matchFound', { opponent: user1 });
+      const user1 = matchmakingQueue.shift(); // Remove and get the first user from the queue
+      const user2 = matchmakingQueue.shift(); // Remove and get the second user from the queue
+
+      if (user1 && user2) {
+        // Notify users that a match has been found
+        io.to(user1).emit('matchFound', { opponent: user2 });
+        io.to(user2).emit('matchFound', { opponent: user1 });
+      }
     }
   });
 
@@ -76,7 +103,10 @@ io.on('connection', (socket) => {
     // const otherUser = ...;
     // io.to(otherUser).emit('opponentLeft');
   });
-
+  socket.on('whateva', () => {
+    console.log('poop 1');
+    socket.broadcast.emit('whateva');
+  });
   // Handle disconnect event
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
@@ -88,6 +118,6 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(3000, () => {
+httpServer.listen(3000, () => {
   console.log(`[server]: Server is running at http://localhost:3000`);
 });
