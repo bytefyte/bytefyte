@@ -1,6 +1,6 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 module.exports = {
   entry: './client/index.tsx',
   output: {
@@ -12,6 +12,9 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       template: './index.html',
+    }),
+    new MonacoWebpackPlugin({
+      languages: ['javascript'],
     }),
   ],
   devServer: {
@@ -41,11 +44,15 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /css$/,
+        test: /\.css$/,
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       { test: /\\.(png|jp(e*)g|svg|gif)$/, use: ['file-loader'] },
+      {
+        test: /\.ttf$/,
+        type: 'asset/resource',
+      },
     ],
   },
   resolve: {

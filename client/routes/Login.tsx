@@ -86,7 +86,7 @@ const Signup = () => {
                 type='button'
                 className='btn btn-block'
                 onClick={handleClick}>
-                Signup
+                Login
               </button>
             </div>
           </form>
