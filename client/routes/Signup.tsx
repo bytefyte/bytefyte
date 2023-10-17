@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+interface signupProps {
+  username: string,
+  setUsername: Function
+}
+
+const Signup = (props:signupProps) => {
   let navigate = useNavigate();
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -10,7 +15,7 @@ const Signup = () => {
     const password = document.getElementById('password') as HTMLInputElement;
     const email = document.getElementById('email') as HTMLInputElement;
     console.log(username.value);
-    const response = await fetch('http://localhost:3000/signup', {
+    const response = await fetch('http://localhost:3000/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,12 +104,13 @@ const Signup = () => {
                 type='button'
                 className='btn btn-block'
                 onClick={handleClick}>
-                Signup
+                Log In
               </button>
             </div>
           </form>
         </div>
       </div>
+      {/* This is for the glowing background */}
       <div className='glowing'>
         <span style={{ '--i': '1' } as React.CSSProperties}></span>
 

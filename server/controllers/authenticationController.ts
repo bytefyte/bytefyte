@@ -35,6 +35,7 @@ const authenticationController: AuthenticationController =  {
             const insertUserResults = await db.query(insertUserQuery, [username, hashedPassword, email]);
             // res.locals.signup = insertUserResults.rows[0];
             // console.log(res.locals.signup)
+            res.locals.username = username
             return next();
         } catch (err) {
             console.log(err);
@@ -62,6 +63,7 @@ const authenticationController: AuthenticationController =  {
             // If the passwords match, proceed to the next middleware function
             // If they don't match, send an error response
             if (passwordsMatch) {
+                res.locals.username = username
                 return next();
             } else {
                 return res.status(400).json({ error: 'Username or password incorrect.' });
