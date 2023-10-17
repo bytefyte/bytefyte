@@ -32,7 +32,6 @@ const Signup = (props:signupProps) => {
     } else if (response.status === 400) {
       setAlertMessage(data.message || 'Bad Request');
       setAlertVisible(true);
-
       // Automatically hide the alert after 2 seconds
       setTimeout(() => {
         setAlertVisible(false);

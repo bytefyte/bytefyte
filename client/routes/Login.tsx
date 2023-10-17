@@ -89,10 +89,10 @@ const Login = (props:loginProps) => {
             </a>
             <div>
               <button
-                type="button"
-                className="btn btn-block"
-                onClick={handleClick}
-              >
+
+                type='button'
+                className='btn btn-block'
+                onClick={handleClick}>
                 Login
               </button>
             </div>

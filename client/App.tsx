@@ -4,6 +4,7 @@ import Login from './routes/Login';
 import Signup from './routes/Signup';
 import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom';
 import Home from './routes/Home';
+import BattlePage from './routes/Battlepage';
 const App: React.FC = () => {
   const [username, setUsername] = useState('');
   return (
