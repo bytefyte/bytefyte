@@ -2,7 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import PreviewPopup from '../componets/PreviewPopup';
 
-const BattlePage = () => {
+interface battlePageProps {
+  username: string,
+  setUsername: Function
+}
+
+const BattlePage = (props: battlePageProps) => {
   return (
     <div className='flex'>
       {/* Your content on the left side */}
