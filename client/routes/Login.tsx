@@ -97,7 +97,17 @@ const Login = (props:loginProps) => {
                 Login
               </button>
             </div>
+            <div>
+        <button
+          type="button"
+          className="btn btn-block"
+          onClick={() => navigate('/signup')}
+        >
+          Don't have an account?
+        </button>
+      </div>
           </form>
+          
         </div>
       </div>
       {/* This is for the glowing background */}

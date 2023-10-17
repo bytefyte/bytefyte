@@ -62,7 +62,7 @@ const Signup = (props:signupProps) => {
       )}
       <div className='relative flex flex-col items-center justify-center h-screen overflow-hidden'>
         <div className='w-full p-6  bg-secondary rounded-md shadow-lg border-top lg:max-w-lg z-50'>
-          <h1 className='text-3xl font-semibold text-center'>Signup</h1>
+          <h1 className='text-3xl font-semibold text-center'>Sign up</h1>
           <form className='space-y-4'>
             <div>
               <label className='label'>
@@ -108,6 +108,15 @@ const Signup = (props:signupProps) => {
                 Log In
               </button>
             </div>
+            <div>
+        <button
+          type="button"
+          className="btn btn-block"
+          onClick={() => navigate('/')}
+        >
+          Already have an account?
+        </button>
+      </div>
           </form>
         </div>
       </div>
