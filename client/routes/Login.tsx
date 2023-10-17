@@ -26,6 +26,7 @@ const Login = (props:loginProps) => {
     });
     const data = await response.json();
     if (response.status === 200) {
+      props.setUsername(username.value)
       navigate('/home');
     } else if (response.status === 400) {
       setAlertMessage(data.message || 'Bad Request');
@@ -96,7 +97,17 @@ const Login = (props:loginProps) => {
                 Login
               </button>
             </div>
+            <div>
+        <button
+          type="button"
+          className="btn btn-block"
+          onClick={() => navigate('/signup')}
+        >
+          Don't have an account?
+        </button>
+      </div>
           </form>
+          
         </div>
       </div>
       {/* This is for the glowing background */}

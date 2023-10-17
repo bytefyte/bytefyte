@@ -16,13 +16,13 @@ const Home = (props:homeProps) => {
       console.log('joined match!')
     });
    return () => {
-      socket.off('whateva');
+      socket.off('joinMatch');
     };
   }, []);
 
   const handleQueueClick = () => {
     queuedState(!queued);
-    socket.emit('whateva')
+    socket.emit('joinMatch')
   }
 
   return (
