@@ -28,6 +28,7 @@ const Signup = (props:signupProps) => {
     });
     const data = await response.json();
     if (response.status === 200) {
+      props.setUsername(username.value)
       navigate('/home');
     } else if (response.status === 400) {
       setAlertMessage(data.message || 'Bad Request');
