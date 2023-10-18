@@ -116,7 +116,6 @@ const BattlePage = (props: battlePageProps) => {
                 <div className='p-2'>
                     <PreviewPopup></PreviewPopup>
                 </div>
-                
             </div>
             <button onClick={handleLeaveRoom}>Leave Room</button>
         </div>
