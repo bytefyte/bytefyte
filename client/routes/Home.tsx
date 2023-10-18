@@ -2,11 +2,13 @@ import React, {useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3000')
+const socket = io('http://localhost:3000');
 
 interface homeProps {
   username: string,
-  setUsername: Function
+  setUsername: Function,
+  roomName: string,
+  setRoomName: Function
 }
 
 const Home = (props:homeProps) => {
@@ -20,6 +22,7 @@ const Home = (props:homeProps) => {
       navigate('/battlePage');
     });
     return () => {
+      if(intervalId) clearInterval(intervalId);
       socket.off('matchFound');
     };
   }, []);
@@ -29,18 +32,52 @@ const Home = (props:homeProps) => {
     socket.emit('joinQueue', props.username)
   }
 
+  let intervalId:number;
+  let second:number;
+  let minute:number;
+
+  useEffect(() => {
+    if (queued) {
+      second = 0;
+      minute = 0;
+      intervalId = window.setInterval(() => {
+        if (second === 60) {
+          minute++;
+          second = 0;
+        } else {
+          second++;
+        }
+        console.log('clock is increasing', minute, second)
+        document.getElementById('minute')?.style.setProperty('--value', String(minute));
+        document.getElementById('second')?.style.setProperty('--value', String(second));
+      }, 1000);
+    } else {
+      minute = 0;
+      second = 0;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    }
+    // Clean up interval on component unmount or when queued changes
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    }
+  }, [queued]); 
+
   return (
     <div>
       <div className='hero min-h-screen bg-base-200'>
         <div className='hero-content text-center'>
-          <div className='max-w-md max-h-lg'>
-            <h1 className='text-8xl font-bold text-center'>ByteFyte</h1>
-            <h1 className='text-8xl font-bold text-center'>Welcome {props.username}</h1>
+          <div className='max-w-xl'>
+            <h1 className='text-8xl font-bold text-center pb-8'>ByteFyte</h1>
+            <h1 className='text-5xl font-bold text-center'>Welcome {props.username}</h1>
             <p className='py-6 text-3xl'>Hone your skills<br/>Prove your strength<br/>Win</p>
             {queued ? <button className='btn btn-primary btn-wide text-2xl' onClick={(e) => queuedState(false)}><span className='loading loading-spinner'></span> Queued</button> :
             <button className='btn btn-primary btn-wide text-2xl' onClick={(e) => handleQueueClick()}>Fyte!</button>}
             {/* TODO: Implement counting up, and reseting whenever queue is cancelled/ends */}
-            {queued ? <div><div className='divider'></div><span className='countdown text-4xl'><span style={{'--value': '0'} as React.CSSProperties}></span></span></div> : <span></span>}
+            {queued ? <div><div className='divider'></div><span className='countdown text-4xl'><span id='minute' style={{'--value': '0'} as React.CSSProperties}></span>m<span id='second' style={{'--value': '0'} as React.CSSProperties}>s</span>s</span></div> : <span></span>}
           </div>
         </div>
       </div>
@@ -91,44 +128,4 @@ const Home = (props:homeProps) => {
   );
 };
 export default Home;
-
-
-// import React, { useState, useEffect } from 'react';
-// import io from 'socket.io-client';
-
-// const socket = io('http://localhost:3000');
-
-// function App() {
-//   const [message, setMessage] = useState('');
-//   const [chat, setChat] = useState([]);
-
-
-
-//   const sendMessage = (e) => {
-//     e.preventDefault();
-//     socket.emit('chat message', message);
-//     setMessage('');
-//   };
-
-//   return (
-//     <div>
-//       <ul id="messages">
-//         {chat.map((msg, index) => (
-//           <li key={index}>{msg}</li>
-//         ))}
-//       </ul>
-//       <form id="form" action="" onSubmit={sendMessage}>
-//         <input
-//           id="input"
-//           autoComplete="off"
-//           value={message}
-//           onChange={(e) => setMessage(e.target.value)}
-//         />
-//         <button>Send</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default App;
 
