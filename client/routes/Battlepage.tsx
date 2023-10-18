@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import PreviewPopup from '../componets/PreviewPopup';
-import { io } from "socket.io-client";
-
-const socket = io('http://localhost:3000');
-
+import socket from './socket';
 type ChatMessage = {
     text: string;
     sender: string;
@@ -28,46 +25,53 @@ const BattlePage = (props: battlePageProps) => {
       if (newMessage.trim() !== '') {
         const message: ChatMessage = {
           text: newMessage,
-          sender: 'You', // Replace with the sender's name or ID
+          sender: props.username,
           time: new Date().toLocaleTimeString(),
           youSent: true,
         };
-  
+    
         setMessages([...messages, message]);
         setNewMessage('');
-  
-        const roomName = props.roomName;  // Get this value from your props or however you're passing it to BattlePage
-        socket.emit('sendMessage', { roomName, message });
+    
+        const roomName = props.roomName;
+        socket.emit('sendMessage', { roomName, message: { ...message, youSent: false }, username: props.username }); // Here, you ensure you're sending `youSent` as false
       }
     };
 
     const handleLeaveRoom = () => {
       const roomName = props.roomName;  // Get this value from your props or however you're passing it to BattlePage
       socket.emit('leaveRoom', roomName);
-      navigate('/');  // navigate back to home
+      navigate('/home');  // navigate back to home
     };
   
 
     useEffect(() => {
-      const roomName = props.roomName;  // Get this value from your props or however you're passing it to BattlePage
-  
+      const roomName = props.roomName; 
+    
+      console.log('room name in battlepage:', roomName)
+    
       socket.emit('joinRoom', roomName);
-  
+    
       socket.on('receiveMessage', message => {
-        setMessages(prevMessages => [...prevMessages, message]);
+        console.log('got message:', message)
+    
+        // Don't add the message if it's echoed back from the server for the sender
+        if (message.sender !== props.username) {
+          setMessages(prevMessages => [...prevMessages, { ...message, youSent: false }]);
+        }
       });
-      
-  
+    
       socket.on('opponentLeft', () => {
         alert('Opponent left');
-        navigate('/');  // navigate back to home
+        navigate('/home');  // navigate back to home
       });
-  
+    
       return () => {
         socket.off('receiveMessage');
         socket.off('opponentLeft');
       };
     }, []);
+    
 
     return (
         <div className='relative h-screen'>
