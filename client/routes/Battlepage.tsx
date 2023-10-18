@@ -8,6 +8,7 @@ type ChatMessage = {
   youSent: boolean;
 };
 
+
 const BattlePage = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -20,6 +21,17 @@ const BattlePage = () => {
         time: new Date().toLocaleTimeString(),
         youSent: true,
       };
+
+interface battlePageProps {
+  username: string,
+  setUsername: Function
+}
+
+const BattlePage = (props: battlePageProps) => {
+  return (
+    <div className='flex'>
+      {/* Your content on the left side */}
+      <div className='flex-1'>Your content on the left side</div>
 
       setMessages([...messages, message]);
       setNewMessage('');
