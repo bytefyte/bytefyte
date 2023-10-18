@@ -18,7 +18,6 @@ function PreviewPopup({
   const [editorVal, setEditorVal] = useState('');
 
   useEffect(() => {
-
     socket.on('opponentLeft', () => {
       alert('Opponent left');
       navigate('/home'); // navigate back to home
@@ -31,36 +30,38 @@ function PreviewPopup({
 
   // TODO: Implement resetting the editor whenever a new problem comes up
   useEffect(() => {
-    setEditorVal(problems[0]?.editortext);
-    console.log(currentProblem)
-    console.log(editorVal)
-  }, [currentProblem])
+    setEditorVal(problems[currentProblem]?.editortext);
+    console.log(currentProblem);
+    console.log(editorVal);
+  }, [currentProblem]);
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
-  };
+  }
   // this function get triggered when we run that eval down there
   // we go to next problem if we get it right and let the other player know
   function success() {
-    setEditorVal(problems[currentProblem]?.editortext)
+    socket.emit('updateScore', { roomName, username });
     console.log('u get point');
-    setCurrentProblem(currentProblem + 1);
-    setUserScore(userScore + 1);
+    setCurrentProblem(oldproblem => {
+      return oldproblem + 1;
+    });
+
+    setUserScore(olduserScore => olduserScore + 1);
     //if user is at 2 they win game make something cool happen ig
     if (userScore + 1 >= 2) {
       console.log('u gapped that noob');
-      alert('U gapped that noob gg')
+      alert('U gapped that noob gg');
       navigate('/home');
     }
-    socket.emit('updateScore', { roomName, username });
-  };
+  }
 
   function fail() {
     console.log('u dont get point');
-  };
+  }
 
   const problemTest = problems[currentProblem]?.answer;
-  
+
   function handleSubmit() {
     const finalString = editorRef.current.getValue() + problemTest;
     try {
@@ -68,7 +69,7 @@ function PreviewPopup({
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
   const handleLeaveRoom = () => {
     // const roomName = roomName; // Get this value from your props or however you're passing it to BattlePage
