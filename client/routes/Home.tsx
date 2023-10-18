@@ -12,6 +12,8 @@ interface homeProps {
 const Home = (props: homeProps) => {
   const navigate = useNavigate();
   const [queued, queuedState] = useState(false);
+
+  // Match Finding Logic
   useEffect(() => {
     socket.on('matchFound', data => {
       console.log('Match found!', data.roomName);
@@ -33,6 +35,7 @@ const Home = (props: homeProps) => {
   let second: number;
   let minute: number;
 
+  // Queue Timer
   useEffect(() => {
     if (queued) {
       second = 0;
@@ -71,27 +74,43 @@ const Home = (props: homeProps) => {
     <div>
       <div className='hero min-h-screen bg-base-200'>
         <div className='hero-content text-center'>
-          <div className='max-w-xl'>
+          <div className='max-w-5xl'>
             <h1 className='text-8xl font-bold text-center pb-8'>ByteFyte</h1>
-            <h1 className='text-5xl font-bold text-center'>
+            <h1 className='text-5xl font-bold text-center pt-10'>
               Welcome {props.username}
             </h1>
-            <p className='py-6 text-3xl'>
+            {/* <p className='py-6 text-3xl'>
               Hone your skills
               <br />
               Prove your strength
               <br />
               Win
-            </p>
+            </p> */}
+            <div className='flex my-20 mt-40'>
+              <div className='flex justify-items-center items-center gap-10'> 
+                <h1 className='text-8xl border-solid border-8 border-accent pb-2 px-1'>1</h1>
+                <p className='text-4xl font-bold pr-3'>Hone your skills</p>
+              </div>
+              <div className='divider divider-horizontal'></div>
+              <div className='flex justify-items-center items-center gap-10 ml-7'> 
+                <h1 className='text-8xl border-solid border-8 border-accent pb-3 px-2'>2</h1>
+                <p className='text-4xl font-bold pr-3'>Prove your strength</p>
+              </div>
+              <div className='divider divider-horizontal'></div>
+              <div className='flex justify-items-center items-center gap-10 ml-7'> 
+                <h1 className='text-8xl border-solid border-8 border-accent pb-3 px-2'>3</h1>
+                <p className='text-4xl font-bold'>Dominate</p>
+              </div>
+            </div>
             {queued ? (
               <button
-                className='btn btn-primary btn-wide text-2xl'
+                className='btn btn-wide btn-accent text-2xl'
                 onClick={e => queuedState(false)}>
                 <span className='loading loading-spinner'></span> Queued
               </button>
             ) : (
               <button
-                className='btn btn-primary btn-wide text-2xl'
+                className='btn btn-wide btn-accent text-2xl z-40'
                 onClick={e => handleQueueClick()}>
                 Fyte!
               </button>

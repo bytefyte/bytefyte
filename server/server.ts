@@ -8,7 +8,9 @@ import cors from 'cors';
 // const authenticationController = require('./controllers/authenticationController')
 import authenticationController from './controllers/authenticationController';
 import battleController from './controllers/battleController';
-
+battleController.dropTable();
+battleController.createTable();
+battleController.populateProblems();
 const app: Express = express();
 const httpServer: http.Server = http.createServer(app);
 const io: Server = new Server(httpServer, {
@@ -108,7 +110,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('sendMessage', ({ roomName, message, username }) => {
-    io.in(roomName).emit('receiveMessage', { ...message, sender: username }); // or use username instead of socket.id
+    io.in(roomName).emit('receiveMessage', { ...message, sender: username });
   });
   socket.on('updateScore', ({ roomName, username }) => {
     console.log('we updating score');
