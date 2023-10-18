@@ -4,13 +4,29 @@ import { join } from 'path';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 import cors from 'cors';
-
+import session from 'express-session';
+const db = require('./models/postgreSQL.ts');
 // const authenticationController = require('./controllers/authenticationController')
 import authenticationController from './controllers/authenticationController';
 import battleController from './controllers/battleController';
-battleController.dropTable();
-battleController.createTable();
-battleController.populateProblems();
+
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
+
+battleController.resetProblems();
+
+interface problem{
+  id: number,
+  problem_name: string,
+  answer: string,
+  difficulty: string,
+  problem_question:string,
+  editortext: string,
+}
+
 const app: Express = express();
 const httpServer: http.Server = http.createServer(app);
 const io: Server = new Server(httpServer, {
@@ -18,6 +34,15 @@ const io: Server = new Server(httpServer, {
     origin: ['http://localhost:8000'],
   },
 });
+
+// Declare the session
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(session({
+  secret: process.env.SECRET || 'fakeSecret',
+  saveUninitialized: true,
+  cookie: { maxAge: oneDay, secure: false },
+  resave: false,
+}))
 
 app.use(cors<Request>());
 app.use(express.json());
@@ -29,7 +54,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/dist', express.static(join(__dirname, '../dist')));
   // serve index.html on the route '/'
   app.get('/', (req: Request, res: Response) =>
-    res.status(200).sendFile(join(__dirname, '../index.html')),
+    res.status(200).sendFile(join(__dirname, '../index.html'))
   );
 }
 
@@ -45,7 +70,7 @@ app.post(
       message: 'User successfully created',
       username: res.locals.username,
     });
-  },
+  }
 );
 app.get(
   '/api/problems',
@@ -53,17 +78,28 @@ app.get(
   (req: Request, res: Response) => {
     console.log('bebop');
     res.status(200).json(res.locals.problems);
-  },
+  }
 );
 app.post(
   '/api/login',
   authenticationController.login,
   (req: Request, res: Response) => {
+    req.session.userId = res.locals.username;
     res
       .status(200)
       .json({ message: 'Login successful', username: res.locals.username });
-  },
+  }
 );
+app.get(
+  '/api/auth',
+  (req: Request, res: Response) => {
+    if(req.session && req.session.userId) {
+      res.status(200);
+    } else {
+      res.status(401);
+    }
+  }
+)
 
 // Unknown route handler
 app.use((req: Request, res: Response) => res.sendStatus(404));
@@ -87,7 +123,7 @@ io.on('connection', (socket: Socket) => {
   console.log('User connected:', socket.id);
 
   // Handle joinMatch event
-  socket.on('joinQueue', username => {
+  socket.on('joinQueue', async (username) => {
     console.log('User joined queue:', username, socket.id);
     matchmakingQueue.push(socket.id);
 
@@ -97,14 +133,25 @@ io.on('connection', (socket: Socket) => {
       const user2 = matchmakingQueue.shift();
 
       if (user1 && user2) {
-        const roomName = user1 + user2; // or username1 + username2
-        console.log('Users joining room:', roomName, user1, user2);
-
-        io.to(user1).emit('matchFound', { roomName });
-        io.to(user2).emit('matchFound', { roomName });
-
-        io.sockets.sockets.get(user1)?.join(roomName);
-        io.sockets.sockets.get(user2)?.join(roomName);
+        try {
+          const userQuery = `SELECT *
+          FROM problems
+          ORDER BY RANDOM()
+          LIMIT 3;`;
+          const userCheckResults = await db.query(userQuery);
+          console.log(userCheckResults.rows);
+          const problems: problem[] = userCheckResults.rows;
+          const roomName = user1 + user2; // or username1 + username2
+          console.log('Users joining room:', roomName, user1, user2);
+  
+          io.to(user1).emit('matchFound', { roomName, problems });
+          io.to(user2).emit('matchFound', { roomName, problems });
+  
+          io.sockets.sockets.get(user1)?.join(roomName);
+          io.sockets.sockets.get(user2)?.join(roomName);
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   });
@@ -116,7 +163,7 @@ io.on('connection', (socket: Socket) => {
     console.log('we updating score');
     io.in(roomName).emit('score', username);
   });
-  socket.on('leaveRoom', roomName => {
+  socket.on('leaveRoom', (roomName) => {
     socket.leave(roomName);
     socket.to(roomName).emit('opponentLeft');
   });
