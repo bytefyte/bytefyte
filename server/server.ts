@@ -97,19 +97,16 @@ io.on('connection', (socket: Socket) => {
     }
   });
 
-  // Handle leaveMatch event
-  socket.on('leaveMatch', () => {
-    console.log('User left match:', socket.id);
-    // Notify the other user in the match that their opponent has left
-    // Note: You may need additional logic to determine the other user in the match
-    // For simplicity, we'll assume the other user's socket ID is stored in a variable called otherUser
-    // const otherUser = ...;
-    // io.to(otherUser).emit('opponentLeft');
+  socket.on('sendMessage', ({ roomName, message }) => {
+    io.in(roomName).emit('receiveMessage', message);
   });
-  socket.on('whateva', () => {
-    console.log('poop 1');
-    socket.broadcast.emit('whateva');
+  
+
+  socket.on('leaveRoom', (roomName) => {
+    socket.leave(roomName);
+    socket.to(roomName).emit('opponentLeft');
   });
+  
   // Handle disconnect event
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
