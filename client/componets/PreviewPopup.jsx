@@ -15,6 +15,7 @@ function PreviewPopup({
 }) {
   const editorRef = useRef(null);
   const navigate = useNavigate();
+  const [editorVal, setEditorVal] = useState('');
 
   useEffect(() => {
 
@@ -28,18 +29,27 @@ function PreviewPopup({
     };
   }, []);
 
+  // TODO: Implement resetting the editor whenever a new problem comes up
+  useEffect(() => {
+    setEditorVal(problems[0]?.editortext);
+    console.log(currentProblem)
+    console.log(editorVal)
+  }, [currentProblem])
+
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
   };
   // this function get triggered when we run that eval down there
   // we go to next problem if we get it right and let the other player know
   function success() {
+    setEditorVal(problems[currentProblem]?.editortext)
     console.log('u get point');
     setCurrentProblem(currentProblem + 1);
     setUserScore(userScore + 1);
     //if user is at 2 they win game make something cool happen ig
     if (userScore + 1 >= 2) {
       console.log('u gapped that noob');
+      alert('U gapped that noob gg')
       navigate('/home');
     }
     socket.emit('updateScore', { roomName, username });
@@ -73,7 +83,8 @@ function PreviewPopup({
         height='90vh'
         defaultLanguage='javascript'
         language='javascript'
-        defaultValue='// some comment'
+        defaultValue={editorVal}
+        value={editorVal}
         onMount={handleEditorDidMount}
       />
       <div className='flex gap-5 mx-5 mt-7 justify-center items-center'>

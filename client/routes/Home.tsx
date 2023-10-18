@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import socket from './socket';
+import ThemeComponent from '../componets/ThemeComponent';
 
 interface homeProps {
   username: string;
   setUsername: Function;
   roomName: string;
   setRoomName: Function;
+  setProblems: Function;
 }
 
 const Home = (props: homeProps) => {
@@ -18,6 +20,7 @@ const Home = (props: homeProps) => {
     socket.on('matchFound', data => {
       console.log('Match found!', data.roomName);
       props.setRoomName(data.roomName);
+      props.setProblems(data.problems)
       navigate('/battlePage');
     });
     return () => {
@@ -74,6 +77,7 @@ const Home = (props: homeProps) => {
     <div>
       <div className='hero min-h-screen bg-base-200'>
         <div className='hero-content text-center'>
+        <ThemeComponent></ThemeComponent>
           <div className='max-w-5xl'>
             <h1 className='text-8xl font-bold text-center pb-8'>ByteFyte</h1>
             <h1 className='text-5xl font-bold text-center pt-10'>
