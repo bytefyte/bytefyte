@@ -7,6 +7,7 @@ import cors from 'cors';
 
 // const authenticationController = require('./controllers/authenticationController')
 import authenticationController from './controllers/authenticationController';
+import battleController from './controllers/battleController';
 
 const app: Express = express();
 const httpServer: http.Server = http.createServer(app);
@@ -26,7 +27,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use('/dist', express.static(join(__dirname, '../dist')));
   // serve index.html on the route '/'
   app.get('/', (req: Request, res: Response) =>
-    res.status(200).sendFile(join(__dirname, '../index.html'))
+    res.status(200).sendFile(join(__dirname, '../index.html')),
   );
 }
 
@@ -42,9 +43,16 @@ app.post(
       message: 'User successfully created',
       username: res.locals.username,
     });
-  }
+  },
 );
-
+app.get(
+  '/api/problems',
+  battleController.getProblems,
+  (req: Request, res: Response) => {
+    console.log('bebop');
+    res.status(200).json(res.locals.problems);
+  },
+);
 app.post(
   '/api/login',
   authenticationController.login,
@@ -52,7 +60,7 @@ app.post(
     res
       .status(200)
       .json({ message: 'Login successful', username: res.locals.username });
-  }
+  },
 );
 
 // Unknown route handler
@@ -77,17 +85,17 @@ io.on('connection', (socket: Socket) => {
   console.log('User connected:', socket.id);
 
   // Handle joinMatch event
-  socket.on('joinQueue', (username) => {
+  socket.on('joinQueue', username => {
     console.log('User joined queue:', username, socket.id);
     matchmakingQueue.push(socket.id);
-  
+
     // Check if two users are in the queue
     if (matchmakingQueue.length >= 2) {
       const user1 = matchmakingQueue.shift();
       const user2 = matchmakingQueue.shift();
-  
+
       if (user1 && user2) {
-        const roomName = user1 + user2;  // or username1 + username2
+        const roomName = user1 + user2; // or username1 + username2
         console.log('Users joining room:', roomName, user1, user2);
 
         io.to(user1).emit('matchFound', { roomName });
@@ -100,15 +108,17 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('sendMessage', ({ roomName, message, username }) => {
-    io.in(roomName).emit('receiveMessage', { ...message, sender: username });  // or use username instead of socket.id
-});
-  
-
-  socket.on('leaveRoom', (roomName) => {
+    io.in(roomName).emit('receiveMessage', { ...message, sender: username }); // or use username instead of socket.id
+  });
+  socket.on('updateScore', ({ roomName, username }) => {
+    console.log('we updating score');
+    io.in(roomName).emit('score', username);
+  });
+  socket.on('leaveRoom', roomName => {
     socket.leave(roomName);
     socket.to(roomName).emit('opponentLeft');
   });
-  
+
   // Handle disconnect event
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
