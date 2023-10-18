@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface signupProps {
-  username: string,
-  setUsername: Function
+  username: string;
+  setUsername: Function;
 }
 
-const Signup = (props:signupProps) => {
+const Signup = (props: signupProps) => {
   let navigate = useNavigate();
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -28,9 +28,9 @@ const Signup = (props:signupProps) => {
     });
     const data = await response.json();
     if (response.status === 200) {
-      props.setUsername(username.value)
+      props.setUsername(username.value);
       navigate('/home');
-    } else if (response.status === 400) {
+    } else {
       setAlertMessage(data.message || 'Bad Request');
       setAlertVisible(true);
       // Automatically hide the alert after 2 seconds
@@ -43,7 +43,7 @@ const Signup = (props:signupProps) => {
   return (
     <div className='bg-default'>
       {alertVisible && (
-        <div className='alert alert-error '>
+        <div className='alert alert-error z-40 '>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             className='stroke-current shrink-0 h-6 w-6'
@@ -104,18 +104,17 @@ const Signup = (props:signupProps) => {
                 type='button'
                 className='btn btn-block'
                 onClick={handleClick}>
-                Log In
+                Sign up
               </button>
             </div>
             <div>
-        <button
-          type="button"
-          className="btn btn-block"
-          onClick={() => navigate('/')}
-        >
-          Already have an account?
-        </button>
-      </div>
+              <button
+                type='button'
+                className='btn btn-block'
+                onClick={() => navigate('/')}>
+                Already have an account?
+              </button>
+            </div>
           </form>
         </div>
       </div>
