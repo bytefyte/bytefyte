@@ -20,10 +20,10 @@ const battleController = {
     db.query(`DROP TABLE problems`)
   },
   populateProblems: async()=>{
-    const problems = fs.readFileSync(path.join(__dirname, '../data/problems.json'));
+    const problems = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/problems.json')));
     problems.forEach(problem => {
       console.log(problem);
-      // db.query('INSERT INTO problems (problem_name, answer, difficulty, problem_question, editortext) VALUES($1, $2, $3, $4, $5)', [problem['problem_name'], problem['answer'], problem['difficulty'] , problem['problem_question'], problem['editortext']])
+      db.query('INSERT INTO problems (problem_name, answer, difficulty, problem_question, editortext) VALUES($1, $2, $3, $4, $5)', [problem['problem_name'], problem['answer'], problem['difficulty'] , problem['problem_question'], problem['editortext']])
     });
   },
   getProblems: async (req: Request, res: Response, next: NextFunction) => {
