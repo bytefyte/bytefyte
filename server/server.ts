@@ -88,6 +88,8 @@ io.on('connection', (socket: Socket) => {
   
       if (user1 && user2) {
         const roomName = user1 + user2;  // or username1 + username2
+        console.log('Users joining room:', roomName, user1, user2);
+
         io.to(user1).emit('matchFound', { roomName });
         io.to(user2).emit('matchFound', { roomName });
 
@@ -97,9 +99,9 @@ io.on('connection', (socket: Socket) => {
     }
   });
 
-  socket.on('sendMessage', ({ roomName, message }) => {
-    io.in(roomName).emit('receiveMessage', message);
-  });
+  socket.on('sendMessage', ({ roomName, message, username }) => {
+    io.in(roomName).emit('receiveMessage', { ...message, sender: username });  // or use username instead of socket.id
+});
   
 
   socket.on('leaveRoom', (roomName) => {
