@@ -60,7 +60,7 @@ const Signup = (props: signupProps) => {
         </div>
       )}
       <div className='relative flex flex-col items-center justify-center h-screen overflow-hidden'>
-        <div className='w-full p-6  bg-secondary rounded-md shadow-lg border-top lg:max-w-lg z-50'>
+        <div className='w-full p-6  bg-accent rounded-md shadow-lg border-top lg:max-w-lg z-50'>
           <h1 className='text-3xl font-semibold text-center'>Sign up</h1>
           <form className='space-y-4'>
             <div>

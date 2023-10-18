@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import socket from '../routes/socket';
 import Editor from '@monaco-editor/react';
@@ -15,9 +15,22 @@ function PreviewPopup({
 }) {
   const editorRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+
+    socket.on('opponentLeft', () => {
+      alert('Opponent left');
+      navigate('/home'); // navigate back to home
+    });
+
+    return () => {
+      socket.off('opponentLeft');
+    };
+  }, []);
+
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor;
-  }
+  };
   // this function get triggered when we run that eval down there
   // we go to next problem if we get it right and let the other player know
   function success() {
@@ -30,11 +43,14 @@ function PreviewPopup({
       navigate('/home');
     }
     socket.emit('updateScore', { roomName, username });
-  }
+  };
+
   function fail() {
     console.log('u dont get point');
-  }
+  };
+
   const problemTest = problems[currentProblem]?.answer;
+  
   function handleSubmit() {
     const finalString = editorRef.current.getValue() + problemTest;
     try {
@@ -42,19 +58,32 @@ function PreviewPopup({
     } catch (err) {
       console.log(err);
     }
-  }
+  };
+
+  const handleLeaveRoom = () => {
+    // const roomName = roomName; // Get this value from your props or however you're passing it to BattlePage
+    socket.emit('leaveRoom', roomName);
+    navigate('/home'); // navigate back to home
+  };
+
   return (
-    <div>
+    <div className='flex flex-col'>
       <Editor
+        theme='vs-dark'
         height='90vh'
         defaultLanguage='javascript'
         language='javascript'
         defaultValue='// some comment'
         onMount={handleEditorDidMount}
       />
-      <button className='btn' onClick={handleSubmit}>
-        submit
-      </button>
+      <div className='flex gap-5 mx-5 mt-7 justify-center items-center'>
+        <button onClick={handleLeaveRoom} className='btn btn-wide'>
+          Leave Room
+        </button>
+        <button className='btn px-60' onClick={handleSubmit}>
+          Submit
+        </button>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import PreviewPopup from '../componets/PreviewPopup';
 import socket from './socket';
+
+/*
+TODO LIST
+ - Style BattlePage
+ - Stop Code from excecuting in our DOM
+ - Randomly picks problem, BO1's for now
+ - Add Cookies? JWTs? Express Session!
+ - Redesign of Main Page
+ - Check for auth when trying to directly route to /home
+*/
+
 type ChatMessage = {
   text: string;
   sender: string;
@@ -22,6 +33,7 @@ type problem = {
   answer: string;
   difficulty: string;
   problem_question: string;
+  editortext: string;
 };
 
 const BattlePage = (props: battlePageProps) => {
@@ -30,7 +42,7 @@ const BattlePage = (props: battlePageProps) => {
   const [problems, setProblems] = useState<problem[]>([]);
   const [userScore, setUserScore] = useState(0);
   const [oppScore, setOppScore] = useState(0);
-  const [wewop, setWewop] = useState(0);
+  const [wewop, setWewop] = useState(0); // WHAT THE FUCK
   const [currentProblem, setCurrentProblem] = useState(0);
   const [newMessage, setNewMessage] = useState('');
 
@@ -64,12 +76,6 @@ const BattlePage = (props: battlePageProps) => {
     }
   };
 
-  const handleLeaveRoom = () => {
-    const roomName = props.roomName; // Get this value from your props or however you're passing it to BattlePage
-    socket.emit('leaveRoom', roomName);
-    navigate('/home'); // navigate back to home
-  };
-
   useEffect(() => {
     const roomName = props.roomName;
     console.log('room name in battlepage:', roomName);
@@ -79,6 +85,7 @@ const BattlePage = (props: battlePageProps) => {
       .then(res => res.json())
       .then(data => {
         setProblems(data);
+        console.log(data)
         console.log(data[0].problem_name);
       });
     socket.on('score', username => {
@@ -94,6 +101,7 @@ const BattlePage = (props: battlePageProps) => {
           if (newOppScore === 2) {
             // Handle the case where the opponent wins the game
             console.log('Opponent won the game');
+            // Add Game Over Popup and Gray Background Out, give button(s) for Home
             navigate('/home');
           } else {
             // Handle the case where the opponent scores a point
@@ -124,6 +132,7 @@ const BattlePage = (props: battlePageProps) => {
     });
 
     return () => {
+      socket.off('score')
       socket.off('receiveMessage');
       socket.off('opponentLeft');
     };
@@ -131,43 +140,46 @@ const BattlePage = (props: battlePageProps) => {
 
   return (
     <div className='relative h-screen'>
-      <h3>{problems[currentProblem]?.problem_name || null}</h3>
-      <p>{problems[currentProblem]?.problem_question || null}</p>
-      <div
-        className='absolute bottom-0 left-0 w-1/4 rounded-lg p-4 border overflow-y'
-        id='chatWindow'>
-        <div id='messageContainer overflow-y'>
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`chat ${message.youSent ? 'chat-start' : 'chat-end'}`}>
-              <div className='chat-image avatar'>
-                <div className='w-10 rounded-full'>
-                  <img src='https://www.exscribe.com/wp-content/uploads/2021/08/placeholder-image-person-jpg.jpg' />
+      <div className='w-1/2 flex flex-col justify-center items-center h-full pb-10'>
+        <h3 className='text-4xl font-bold my-10'>{problems[currentProblem]?.problem_name || null}</h3>
+        <p className='text-lg ml-7 mr-3 mb-10'>{problems[currentProblem]?.problem_question || null}</p>
+        <div className='divider'></div>
+        <div
+          className='justify-self-stretch rounded-lg p-4 border overflow-y w-5/6 mt-auto'
+          id='chatWindow'>
+          <div id='messageContainer overflow-y'>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`chat ${message.youSent ? 'chat-start' : 'chat-end'}`}>
+                <div className='chat-image avatar'>
+                  <div className='w-10 rounded-full'>
+                    <img src='https://www.exscribe.com/wp-content/uploads/2021/08/placeholder-image-person-jpg.jpg' />
+                  </div>
                 </div>
+                <div className='chat-header'>
+                  {message.sender}&nbsp;&nbsp;
+                  <time className='text-xs opacity-50'>{message.time}</time>
+                </div>
+                <div className='chat-bubble'>{message.text}</div>
               </div>
-              <div className='chat-header'>
-                {message.sender}&nbsp;&nbsp;
-                <time className='text-xs opacity-50'>{message.time}</time>
-              </div>
-              <div className='chat-bubble'>{message.text}</div>
-            </div>
-          ))}
-        </div>
-        <div className='flex'>
-          <input
-            type='text'
-            placeholder='send message'
-            className='input input-bordered w-full'
-            id='messageSend'
-            onChange={e => setNewMessage(e.target.value)}
-          />
-          <button className='btn' onClick={handleSendMessage}>
-            Send
-          </button>
+            ))}
+          </div>
+          <div className='flex'>
+            <input
+              type='text'
+              placeholder='send message'
+              className='input input-bordered w-full'
+              id='messageSend'
+              onChange={e => setNewMessage(e.target.value)}
+            />
+            <button className='btn' onClick={handleSendMessage}>
+              Send
+            </button>
+          </div>
         </div>
       </div>
-      <div className='absolute top-0 right-0 w-1/2 h-screen bg-gray-200'>
+      <div className='absolute top-2 right-1 w-1/2 h-screen bg-base-100'>
         <div className='p-2'>
           <PreviewPopup
             problems={problems}
@@ -179,17 +191,15 @@ const BattlePage = (props: battlePageProps) => {
             username={props.username}></PreviewPopup>
         </div>
       </div>
-      <button onClick={handleLeaveRoom} className='btn'>
-        Leave Room
-      </button>
-      <p className='text-5xl font-bold'>
+
+      {/* <p className='text-5xl font-bold'>
         Scoreboard: {userScore} - {oppScore}{' '}
-      </p>
-      <button
+      </p> */}
+      {/* <button    // pretty sure this does nothing, was only added for purpose of testing
         className='btn'
         onClick={() => socket.emit('updateScore', 'idkPP')}>
         emit
-      </button>
+      </button> */}
     </div>
   );
 };
