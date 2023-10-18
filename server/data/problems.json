@@ -15,7 +15,7 @@
   },
   {
     "problem_name": "binToDec",
-    "editortext": "function bunToDec(string){}",
+    "editortext": "function binToDec(string){}",
     "answer": "try { if (binToDec('101') === 5 && binToDec('11111100100') === 2020 && binToDec('0000000010101') === 21) success(); else fail(); } catch (err) { fail(); }",
     "difficulty": "easy",
     "problem_question": "Given a string that represents a Binary Number, write a function that converts this string into a decimal number. DO NOT use the native parseInt() method.\n\nFor example:\n\nbinToDec('0')   -> 0\nbinToDec('11')  -> 3\nbinToDec('100') -> 4\nbinToDec('101') -> 5\nbinToDec('0101') -> 5"

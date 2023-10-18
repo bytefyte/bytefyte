@@ -41,7 +41,7 @@ const BattlePage = (props: battlePageProps) => {
   const [oppScore, setOppScore] = useState(0);
   const [currentProblem, setCurrentProblem] = useState(0);
   const [newMessage, setNewMessage] = useState('');
-
+  console.log(currentProblem, props.problems);
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
       const message: ChatMessage = {
@@ -71,9 +71,11 @@ const BattlePage = (props: battlePageProps) => {
       }); // Here, you ensure you're sending `youSent` as false
     }
   };
-  const handleEnterPress =(e: any) =>{
-    if(e.key === 'Enter'){handleSendMessage()}
-  }
+  const handleEnterPress = (e: any) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
   useEffect(() => {
     const roomName = props.roomName;
     console.log('room name in battlepage:', roomName);
@@ -87,18 +89,20 @@ const BattlePage = (props: battlePageProps) => {
         //i got 0 clue what the fuck is going on here updating state was not working so no we got this
         // i didnt evven know u could do this
         setOppScore(prevOppScore => {
+          console.log('prev opp score', prevOppScore, currentProblem);
           const newOppScore = prevOppScore + 1;
 
           if (newOppScore === 2) {
             // Handle the case where the opponent wins the game
             console.log('Opponent won the game');
-            alert('Opponent gapped u gg')
+            alert('Opponent gapped u gg');
             // Add Game Over Popup and Gray Background Out, give button(s) for Home
             navigate('/home');
           } else {
             // Handle the case where the opponent scores a point
             console.log('Opponent scored a point');
-            setCurrentProblem(currentProblem + 1);
+            console.log('setting new problem to ', currentProblem + 1);
+            setCurrentProblem(prevCurrentProblem => prevCurrentProblem + 1);
           }
 
           return newOppScore;
@@ -123,7 +127,7 @@ const BattlePage = (props: battlePageProps) => {
     });
 
     return () => {
-      socket.off('score')
+      socket.off('score');
       socket.off('receiveMessage');
       socket.off('opponentLeft');
     };
@@ -132,12 +136,18 @@ const BattlePage = (props: battlePageProps) => {
   return (
     <div className='relative h-screen'>
       <div className='w-1/2 flex flex-col justify-center items-center h-full pb-10'>
-        <h3 className='text-4xl font-bold my-10'>{props.problems[currentProblem]?.problem_name || null}</h3>
-        <p className='text-lg ml-7 mr-3 mb-10'>{props.problems[currentProblem]?.problem_question || null}</p>
+        <h3 className='text-4xl font-bold my-10'>
+          {props.problems[currentProblem]?.problem_name || null}
+        </h3>
+        <p className='text-lg ml-7 mr-3 mb-10'>
+          {props.problems[currentProblem]?.problem_question || null}
+        </p>
         <div className='divider'></div>
         <div className='flex flex-col justify-center items-center mb-10'>
           <h2 className='text-2xl'>Your Score - Opponent Score</h2>
-          <h2 className='text-2xl'>{userScore} - {oppScore}</h2>
+          <h2 className='text-2xl'>
+            {userScore} - {oppScore}
+          </h2>
         </div>
         <div
           className='justify-self-stretch rounded-lg p-4 border overflow-y-auto w-5/6 mt-auto'
@@ -146,7 +156,9 @@ const BattlePage = (props: battlePageProps) => {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`chat ${message.youSent ? 'chat-start' : 'chat-end'} mb-3`}>
+                className={`chat ${
+                  message.youSent ? 'chat-start' : 'chat-end'
+                } mb-3`}>
                 <div className='chat-image avatar'>
                   <div className='w-10 rounded-full'>
                     <img src='https://www.exscribe.com/wp-content/uploads/2021/08/placeholder-image-person-jpg.jpg' />
@@ -185,7 +197,7 @@ const BattlePage = (props: battlePageProps) => {
             userScore={userScore}
             roomName={props.roomName}
             username={props.username}
-            />
+          />
         </div>
       </div>
 
