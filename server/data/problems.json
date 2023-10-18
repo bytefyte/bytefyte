@@ -1,0 +1,107 @@
+[
+  {
+    "problem_name": "fizzbuzz",
+    "editortext": "function fizzbuzz(num){};",
+    "answer": "try { const arr = fizzbuzz(31); if (arr[0] === 1 && arr[2] === 'fizz' && arr[9] === 'buzz') { success(); } else { fail(); } } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that returns an array containing the numbers 1 to NUM. Put 'fizz' in place of numbers divisible by 3 but not by 5, 'buzz' in place of numbers divisible by 5 but not by 3, and 'fizzbuzz' in place of numbers divisible by both 3 and 5. fizzbuzz(16); -> [1, 2, 'fizz', 4, 'buzz', 'fizz', 7, 8, 'fizz', 'buzz', 11, 'fizz', 13, 14, 'fizzbuzz', 16]"
+  },
+  {
+    "problem_name": "balancedParens",
+    "editortext": "function balancedParens(string){};",
+    "answer": "`try { if (balancedParens('()') === true && balancedParens('((()))') === true && balancedParens(')(') === false && balancedParens('()))') === false && balancedParens('[]{}()') === true && balancedParens('{([{}])}') === true && balancedParens('[{](})') === false && balancedParens(' const coolFunc = () => { anotherCoolFunc(); }') === true && balancedParens(' const yungHash = { a_key: { another_key: a_sicc_value } ;') === false) { success(); } else { fail(); } } catch (err) { fail(); }`;",
+    "difficulty": "easy",
+    "problem_question": "write a function that takes a string of text and returns true if the parentheses are balanced and false otherwise. Example: balancedParens('()');  // false balancedParens('()'); // true balancedParens('()');  // false balancedParens('()');  // true Step 2: make your solution work for all types of brackets Example: balancedParens('[]{}()'); // true balancedParens('[({})]');   // true balancedParens('[({})]'); // false Step 3: ignore non-bracket characters balancedParens(' const wow = { yo: thisIsAwesome() }'); // true balancedParens(' const newton = () => { telescopes.areSicc(); '); // false"
+  },
+  {
+    "problem_name": "binToDec",
+    "editortext": "function bunToDec(string){}",
+    "answer": "try { if (binToDec('101') === 5 && binToDec('11111100100') === 2020 && binToDec('0000000010101') === 21) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Given a string that represents a Binary Number, write a function that converts this string into a decimal number. DO NOT use the native parseInt() method.\n\nFor example:\n\nbinToDec('0')   -> 0\nbinToDec('11')  -> 3\nbinToDec('100') -> 4\nbinToDec('101') -> 5\nbinToDec('0101') -> 5"
+  },
+  {
+    "problem_name": "isPalindrome",
+    "editortext": "function isPalindrome(string){}",
+    "answer": "try { if (isPalindrome('level') && !isPalindrome('world') && isPalindrome('deified')) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that checks if a given string is a palindrome. The check should be case-sensitive.\n\nFor example:\n\nisPalindrome('level')  -> true\nisPalindrome('Level')  -> false\nisPalindrome('world') -> false\nisPalindrome('deified') -> true"
+  },
+  {
+    "problem_name": "findFactorial",
+    "editortext": "function findFactorial(n){}",
+    "answer": "try { if (findFactorial(0) === 1 && findFactorial(5) === 120 && findFactorial(7) === 5040) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that returns the factorial of a given number.\n\nFor example:\n\nfindFactorial(0)  -> 1\nfindFactorial(3)  -> 6\nfindFactorial(5) -> 120\nfindFactorial(7) -> 5040"
+  },
+  {
+    "problem_name": "reverseString",
+    "editortext": "function reverseString(string){}",
+    "answer": "try { if (reverseString('hello') === 'olleh' && reverseString('algorithm') === 'mhtirogla') success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that reverses a given string.\n\nFor example:\n\nreverseString('hello')  -> 'olleh'\nreverseString('algorithm') -> 'mhtirogla'"
+  },
+  {
+    "problem_name": "areAnagrams",
+    "editortext": "function areAnagrams(str1, str2){}",
+    "answer": "try { if (areAnagrams('listen', 'silent') && !areAnagrams('hello', 'world')) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that checks if two strings are anagrams of each other. Ignore any non-alphanumeric characters and consider the comparison case-insensitive.\n\nFor example:\n\nareAnagrams('listen', 'silent')  -> true\nareAnagrams('hello', 'world') -> false"
+  },
+  {
+    "problem_name": "fibonacci",
+    "editortext": "function fibonacci(index){}",
+    "answer": "try { if (fibonacci(5) === 5 && fibonacci(7) === 13) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that returns the Fibonacci number at a given index.\n\nFor example:\n\nfibonacci(5)  -> 5\nfibonacci(7) -> 13"
+  },
+  {
+    "problem_name": "findGCD",
+    "editortext": "function findGCD(a, b){}",
+    "answer": "try { if (findGCD(56, 98) === 14 && findGCD(45, 120) === 15) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that returns the greatest common divisor of two numbers.\n\nFor example:\n\nfindGCD(56, 98)  -> 14\nfindGCD(45, 120) -> 15"
+  },
+  {
+    "problem_name": "isRotation",
+    "editortext": "function isRotation(string1, string2){}",
+    "answer": "try { if (isRotation('waterbottle', 'erbottlewat') && !isRotation('hello', 'lohel')) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "medium",
+    "problem_question": "Determine if a string is a rotation of another string.\n\nFor example:\n\nisRotation('waterbottle', 'erbottlewat')  -> true\nisRotation('hello', 'lohel') -> false"
+  },
+  {
+    "problem_name": "findLongestWord",
+    "editortext": "function findLongestWord(sentence){}",
+    "answer": "try { if (findLongestWord('The quick brown fox') === 'quick' && findLongestWord('Hello World') === 'Hello') success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that finds and returns the longest word in a sentence. If two words have the same length, return the first one.\n\nFor example:\n\nfindLongestWord('The quick brown fox')  -> 'quick'\nfindLongestWord('Hello World') -> 'Hello'"
+  },
+  {
+    "problem_name": "hasUniqueChars",
+    "editortext": "function hasUniqueChars(string){}",
+    "answer": "try { if (hasUniqueChars('abcdef') && !hasUniqueChars('apple')) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "easy",
+    "problem_question": "Write a function that determines if a string has all unique characters.\n\nFor example:\n\nhasUniqueChars('abcdef')  -> true\nhasUniqueChars('apple') -> false"
+  },
+  {
+    "problem_name": "longestPalindrome",
+    "editortext": "function longestPalindrome(string){}",
+    "answer": "try { if (longestPalindrome('babad') === 'bab' || longestPalindrome('babad') === 'aba' && longestPalindrome('cbbd') === 'bb') success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "hard",
+    "problem_question": "Given a string, find the longest palindromic contiguous substring. If there are more than one with the maximum length, return any one.\n\nFor example:\n\nlongestPalindrome('babad')  -> 'bab' or 'aba'\nlongestPalindrome('cbbd') -> 'bb'"
+  },
+  {
+    "problem_name": "shortestPath",
+    "editortext": "function shortestPath(matrix, start, end){}",
+    "answer": "try { if (shortestPath([[1,1,0,0], [0,1,1,1], [0,0,1,1]], [0,0], [2,3]) === 5) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "hard",
+    "problem_question": "Given a 2D matrix of 1s and 0s, where 1 represents a walkable cell and 0 represents a blocked cell, find the shortest path from a start cell to an end cell. You can move up, down, left, and right. Return the length of the shortest path.\n\nFor example:\n\nshortestPath([[1,1,0,0], [0,1,1,1], [0,0,1,1]], [0,0], [2,3])  -> 5"
+  },
+  {
+    "problem_name": "mergeKLists",
+    "editortext": "function mergeKLists(lists){}",
+    "answer": "try { let result = mergeKLists([[1,4,5],[1,3,4],[2,6]]); if (JSON.stringify(result) === JSON.stringify([1,1,2,3,4,4,5,6])) success(); else fail(); } catch (err) { fail(); }",
+    "difficulty": "hard",
+    "problem_question": "You are given an array of `k` linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.\n\nFor example:\n\nmergeKLists([[1,4,5],[1,3,4],[2,6]]) -> [1,1,2,3,4,4,5,6]"
+  }
+]

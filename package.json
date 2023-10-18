@@ -4,9 +4,9 @@
   "description": "This is ByteFyte",
   "main": "webpack.config.js",
   "scripts": {
-    "start": "NODE_ENV=production bun run ./server/server.ts",
-    "build": "NODE_ENV=production bun build ./client/index.tsx --outdir ./dist",
-    "dev": "NODE_ENV=development concurrently \"bun run --hot ./server/server.ts\" \"bun build --watch ./client/index.tsx --outdir ./dist\""
+    "start": "NODE_ENV=production npx ts-node server/server.ts",
+    "build": "NODE_ENV=production webpack",
+    "dev": "NODE_ENV=development concurrently \"npx webpack serve --open\" \"nodemon server/server.ts\""
   },
   "repository": {
     "type": "git",
@@ -19,16 +19,55 @@
   },
   "homepage": "https://github.com/bytefyte/bytefyte#readme",
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/plugin-transform-runtime": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-react": "^7.22.15",
+    "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.20",
+    "@types/express-session": "^1.17.9",
+    "@types/node": "^20.8.7",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/socket.io": "^3.0.2",
+    "autoprefixer": "^10.4.16",
+    "babel-loader": "^9.1.3",
     "bun-types": "latest",
     "concurrently": "^8.2.1",
+    "css-loader": "^6.8.1",
+    "daisyui": "^3.9.2",
     "dotenv": "^16.3.1",
-    "typescript": "^5.2.2"
+    "file-loader": "^6.2.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "nodemon": "^3.0.1",
+    "postcss": "^8.4.31",
+    "react-router-dom": "^6.17.0",
+    "socket.io": "^4.7.2",
+    "style-loader": "^3.3.3",
+    "tailwindcss": "^3.3.3",
+    "ts-loader": "^9.5.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "monaco-editor-webpack-plugin": "^7.1.0",
+    "pg": "^8.11.3",
+    "postcss-loader": "^7.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-monaco-editor": "^0.54.0",
     "react-router": "^6.17.0",
-    "react-router-dom": "^6.17.0"
+    "socket.io-client": "^4.7.2",
+    "theme-change": "^2.5.0",
+    "webpack": "^5.89.0"
   }
 }
